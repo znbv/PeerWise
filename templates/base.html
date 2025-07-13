@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> 
+    <title>PeerWise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--Bootstrap 5 CSS  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <!--- CSS -->
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body class="d-flex flex-column min-vh-100 m-0 p-0">
+
+<!--  Navbar from bootstrap-->
+<nav class="nav-color navbar navbar-expand-lg ">
+  <div class="container">
+    <!-- Logo  -->
+    <a class= "navbar-brand fw-bold text-white" href="{% url 'tutors' %}">PeerWise</a>
+    <div class="ms-auto gap-2">
+      <!-- Home button -->
+      <a href="{% url 'tutors' %}" title="Home" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid fa-house"></i></a>
+      <a href="{% url 'tutorlistadmin' %}" title ="Admin only" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid fa-user-tie"></i></a>
+    </div>
+  </div>
+</nav>
+
+{% if request.resolver_match.url_name == "tutors" %}
+  <!-- Render the hero section -->
+<header class="hero-color text-center m-0 p-4 w-100" style="border-radius:0;">
+  <div class="w-100 py-4">
+      <h1 class="display-6 fw-bold m-0 pt-4">Find the right tutor and start your learning journey.</h1>
+      <p class="lead col-md-8 mx-auto pb-4 m-0">Want to share your knowledge? Feel free to become a tutor — reach out to us! </p>
+  </div>
+</header> 
+<br>
+{% endif %}
+                  
+
+ <div class="container mt-4"> 
+  <!--  Page-specific content block -->
+  {% block content %}
+  {% endblock %}
+</div> 
+
+<!--  Footer -->
+<footer class="footer-color text-light text-center py-3 mt-5">
+  <div class="container">
+    <p class="mb-1 fw-bold">© 2025 PeerWise | A Learning Platform</p>
+  </div>
+</footer>
+</body>
+</html>

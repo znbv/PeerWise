@@ -1,0 +1,86 @@
+body {
+    background-color: #e8f1ff;
+
+}
+
+.container.mt-4 {
+    flex: 1;
+
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+
+.btn-custom {
+    background-color:#33566b; 
+    color: white;
+    border: 2px solid rgb(170, 136, 142);
+}
+
+.btn-custom-search {
+    background-color:#33566b; 
+    color: white;
+    border: 2px solid rgb(170, 136, 142);
+ 
+}
+
+
+.btn-custom:hover {
+    background-color: #eecaa4;
+}
+
+.hero-color{
+
+    background-color: #b3ccff;
+}
+
+.card-color {
+
+    background-color: #d5e4ff;
+}
+
+.nav-color{
+    background-color: #2f45ff; 
+}
+
+.footer-color {
+    padding: 1rem 0;
+    background-color: #2f45ff;
+    color: #c1d5e9;
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.navbar-font{
+    font-style: normal;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    font-style: italic;
+    
+}
+
+.center{
+    text-align: center;
+}
+
+header{
+    background-image: url("/static/images/blue.jpg");
+    background-size: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+ .style-search {
+     width: 90%;
+     height: 40px;
+     /* bigger */
+      padding: 8px 16px;
+     border: 1px solid rgb(82, 79, 79);    
+     margin-bottom: 3%;
+
+ }
+
+ 
