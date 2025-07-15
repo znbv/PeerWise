@@ -73,6 +73,11 @@ header{
     background-repeat: no-repeat;
 }
 
+.ok{
+    background-image: url("/static/images/logo.jpg");
+
+}
+
  .style-search {
      width: 90%;
      height: 40px;

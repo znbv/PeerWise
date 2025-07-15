@@ -1,10 +1,7 @@
 {% extends "base.html" %}
-{% load static %} 
+{% load static %}
 
 {% block content %}
-{% comment %} <div class="container mt-5">
-    <h1 class="mb-4">Welcome, Admin!</h1> 
-</div>     {% endcomment %}
 
 <div>
     <form class="d-flex my-2 my-lg-0" method="GET" name="q">
@@ -12,58 +9,61 @@
         <button class="btn btn-outline-primary mb-3" type="submit">Search</button>
     </form>      
 </div>
-     {% if tutors %}
-         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> <!--Ensures that cards are responsive and adapt to different screen sizes -->
-            {% for tutor in tutors %}
-                <div class="col">
-                    <div class="card-color card h-100 shadow-sm"> <!--h-100 ensures all cards have same height, shadow-sm adds a light shadow box-->                        
-                        <div class="card-body">
-                            <h5 class="card-title">{{ tutor.name }}</h5>
-                            <h6 class=" card-subtitle mb-2 text-muted">{{ tutor.subject }}</h6>
-                            <p class=" card-text">{{ tutor.description }}</p>
-                            <p class=" text-muted mb-2"><strong>Email:</strong> {{ tutor.contact_email }}</p>
-                            <a href="{% url 'student_request' tutor.id %}" class="btn btn-custom btn-sm me-2">Send Request</a>
-                            <a href="{% url 'leave_feedback' tutor.id %}" class="btn btn-custom btn-outline-secondary btn-sm">Leave Feedback</a>
-                        </div>
 
-                                                <!-- Feedback Section -->
-                     
-                                    <div class="card-color card-footer ">
-                                    <h6>Feedback:</h6>
-                                    {% comment %} <div class="list-group list-group-flush"> {% endcomment %}
-                                    {% for fb in feedbacks %}
-                                        {% if fb.tutor.id == tutor.id %}
-                                        <div class="list-group-item mb-2 rounded shadow-sm">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <strong>{{ fb.student_name }}</strong>
-                                            <!-- Star Rating -->
-                                            <span>
-                                                {% for i in "12345"|make_list %}
+{% if tutors %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for tutor in tutors %}
+            <div class="col">
+                <div class="card-color card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ tutor.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ tutor.subject }}</h6>
+                        <p class="card-text">{{ tutor.description }}</p>
+                        <p class="text-muted mb-2"><strong>Email:</strong> {{ tutor.contact_email }}</p>
+                      
+                        {% if tutor.sent_request %}
+                            <a href="#" class="btn btn-custom btn-sm me-2 disabled">Request Sent</a>
+                        {% else %}
+                            <a href="{% url 'student_request' tutor.id %}" class="btn btn-custom btn-sm me-2">Send Request</a>
+                        {% endif %} 
+
+                        <a href="{% url 'leave_feedback' tutor.id %}" class="btn btn-custom btn-outline-secondary btn-sm">Leave Feedback</a>
+                    </div>
+
+                    <div class="card-color card-footer">
+                        <h6>Feedback:</h6>
+                        {% for fb in feedbacks %}
+                            {% if fb.tutor.id == tutor.id %}
+                                <div class="list-group-item mb-2 rounded shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>{{ fb.student_name }}</strong>
+                                        <span>
+                                            {% for i in "12345"|make_list %}
                                                 {% if forloop.counter <= fb.rating %}
-                                                    <span style="color: gold; font-size: 1.3em;">&#9733;</span>  
+                                                    <span style="color: gold; font-size: 1.3em;">&#9733;</span>
                                                 {% else %}
-                                                    <span style="color: #ddd; font-size: 1.3em;">&#9733;</span>  
+                                                    <span style="color: #ddd; font-size: 1.3em;">&#9733;</span>
                                                 {% endif %}
-                                                {% endfor %}       
-                                            <span>   
-                                            </div>
-                                            <p class="mb-1">{{ fb.comment }}</p>
-                                            {% if fb.created_at %}
-                                            <small class="text-muted">Posted on {{ fb.created_at|date:"M d, Y" }}</small>
-                                            {% endif %}
-                                        </div>
-                                        {% endif %}
-                                      {% empty %}
-                                        <p>No feedback available yet.</p>
-                                    {% endfor %}
-                                </div>        
-                            </div>
-                        </div>
-                    {% endfor %}
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                    <p class="mb-1">{{ fb.comment }}</p>
+                                    {% if fb.created_at %}
+                                        <small class="text-muted">Posted on {{ fb.created_at|date:"M d, Y" }}</small>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <p>No feedback available yet.</p>
+                        {% endfor %}
+                    </div>
+
                 </div>
-                {% else %}
-                <p>No tutors available yet.</p>
-            {% endif %}
-        </div>
-     {% endblock %}
-        
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No tutors available yet.</p>
+{% endif %}
+
+{% endblock %}

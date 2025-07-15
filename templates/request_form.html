@@ -9,7 +9,7 @@
 
                 {% csrf_token %}
                 {{ form.as_p}}  
-                <a href="{% url 'thankyou' %}" class="btn btn-custom rounded btn-primary">Submit Request</a>
+                <button type="submit" class="btn btn-custom rounded btn-primary">Submit Request</button>
                 <a href="{% url 'tutors' %}" class="btn btn-secondary">Cancel</a>
          
         </form> 

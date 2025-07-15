@@ -27,7 +27,12 @@ class StudentRequestForm(forms.ModelForm):
                 attrs={"class": "form-control", "placeholder": "Your email"}
             ),
         }
-
+    def save(self, commit = True):
+        self.instance.tutor.sent_request = True
+        tutor= self.instance.tutor
+        tutor.save()
+        return super().save(commit)
+    
 class StudentFeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
