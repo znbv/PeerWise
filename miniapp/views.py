@@ -6,28 +6,25 @@ from .models import Tutor, StudentRequest, Feedback
 from .forms import TutorUpdateForm, StudentRequestForm, StudentFeedbackForm
 # Create your views here.
 
-
 def thankyou(request):
     return render(request, "thank_you.html") #simply diplays the thankyou page.
 
-
-class TutorListView(ListView): #lists all tutors from the tutot model and send them to the html template
+class TutorListView(ListView):
     model = Tutor
-    template_name = 'homepage.html' #templatename will give an error
-    context_object_name= 'tutors' #tutors is the name of the variable that will be used in the template to access the list of tutors
+    template_name = "homepage.html"
+    context_object_name = "tutors"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["feedbacks"] = Feedback.objects.all()
-        return context
-    
-    def get_queryset(self): #display tutors by the subjects they teach.
+    def get_queryset(self):
         queryset = super().get_queryset()
         subject = self.request.GET.get("q")
         if subject:
             queryset = queryset.filter(subject__icontains=subject)
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feedbacks"] = Feedback.objects.all()
+        return context
 
 class StudentRequestCreateView(CreateView): #allow students to req for a tutor using a form
     model = StudentRequest
@@ -46,16 +43,13 @@ class FeedbackCreateView(CreateView):
     success_url = reverse_lazy("tutors")  # Redirects to homepage after submission
 
     def get_initial(self):
-        tutor_id = self.kwargs.get(
-            "pk"
-        )  # 1-M relationship allowed each request to be linked to a specific tutor
+        tutor_id = self.kwargs.get("pk" )  # 1-M relationship allowed each request to be linked to a specific tutor
         return {"tutor": tutor_id}
 
 class TutorViewForAdmin(ListView):
     model = Tutor
     template_name = 'admin_dashboard.html'
     context_object_name= 'tutorlistadmin' #tutors is the name of the variable that will be used in the template to access the list of tutors
-
 
 def update_delete_tutor(request, pk):
     tutor = get_object_or_404(Tutor, pk=pk)

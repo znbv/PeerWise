@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
 
 <div>
@@ -29,7 +28,7 @@
 
                         <a href="{% url 'leave_feedback' tutor.id %}" class="btn btn-custom btn-outline-secondary btn-sm">Leave Feedback</a>
                     </div>
-
+                    <!-- feedback section-->
                     <div class="card-color card-footer">
                         <h6>Feedback:</h6>
                         {% for fb in feedbacks %}
@@ -65,5 +64,6 @@
 {% else %}
     <p>No tutors available yet.</p>
 {% endif %}
+
 
 {% endblock %}
