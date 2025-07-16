@@ -75,8 +75,7 @@ header{
  .style-search {
      width: 90%;
      height: 40px;
-     /* bigger */
-      padding: 8px 16px;
+     padding: 8px 16px;
      border: 1px solid rgb(82, 79, 79);    
      margin-bottom: 3%;
 

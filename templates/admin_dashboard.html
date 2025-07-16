@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+  <h1 class="mb-2">Welcome, Admin!</h1>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Description</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tutor in tutorlistadmin %}
+      <tr>
+        <form method="POST" action="{% url 'update_delete_tutor' tutor.id %}">
+          {% csrf_token %}
+          <th scope="row">{{ forloop.counter }}</th>
+          <td><input type="text" name="name" value="{{ tutor.name }}" class="form-control form-control-sm"></td>
+          <td><input type="text" name="subject" value="{{ tutor.subject }}" class="form-control form-control-sm"></td>
+          <td><textarea name="description" class="form-control form-control-sm">{{ tutor.description }}</textarea></td>
+          <td><input type="email" name="contact_email" value="{{ tutor.contact_email }}" class="form-control form-control-sm"></td>
+          <td>
+            <button type="submit" class="btn btn-primary btn-sm" name="action" value="Update">Update</button>
+
+            <!-- Delete button trigger modal -->
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delModal-{{ tutor.id }}">
+              Delete
+            </button>
+
+            <!-- Modal  -->
+            <div class="modal fade" id="delModal-{{ tutor.id }}" tabindex="-1" aria-labelledby="modalLabel-{{ tutor.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel-{{ tutor.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete the selected tutor?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="action" value="Delete" class="btn btn-danger">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </td>
+        </form>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

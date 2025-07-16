@@ -53,11 +53,11 @@ class FeedbackCreateView(CreateView):
 
 class TutorViewForAdmin(ListView):
     model = Tutor
-    template_name = 'admin_control.html'
+    template_name = 'admin_dashboard.html'
     context_object_name= 'tutorlistadmin' #tutors is the name of the variable that will be used in the template to access the list of tutors
 
 
-def update_tutor(request, pk):
+def update_delete_tutor(request, pk):
     tutor = get_object_or_404(Tutor, pk=pk)
     form = TutorUpdateForm(request.POST or None, instance=tutor)
 
@@ -73,5 +73,5 @@ def update_tutor(request, pk):
             return redirect("tutors")
 
     return render(
-        request, "admin_control.html", {"form": form, "tutors": Tutor.objects.all()}
+        request, "admin_dashboard.html", {"form": form, "tutors": Tutor.objects.all()}
     )
