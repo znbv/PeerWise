@@ -20,11 +20,16 @@ class TutorListView(ListView):
         if subject:
             queryset = queryset.filter(subject__icontains=subject)
         return queryset
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["feedbacks"] = Feedback.objects.all()
+        feedbacks = Feedback.objects.all()
+        tutors = context["tutors"]
+        for tutor in tutors:
+            tutor.feedback_list = feedbacks.filter(tutor_id=tutor.id)
+
         return context
+
 
 class StudentRequestCreateView(CreateView): #allow students to req for a tutor using a form
     model = StudentRequest
