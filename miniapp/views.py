@@ -4,6 +4,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from .models import Tutor, StudentRequest, Feedback
 from .forms import TutorUpdateForm, StudentRequestForm, StudentFeedbackForm
+from django.contrib import messages
+
 # Create your views here.
 
 def thankyou(request):
@@ -67,10 +69,12 @@ def update_delete_tutor(request, pk):
 
         if action == "Update" and form.is_valid():
             form.save()
-            return redirect("tutors")
+            messages.success(request, "Tutor information updated successfully!" )
+            return redirect("tutorlistadmin")
 
         elif action == "Delete":
             tutor.delete()
-            return redirect("tutors")
+            messages.success(request, "Tutor deleted successfully!")
+            return redirect("tutorlistadmin")
 
-    return render(request, "admin_dashboard.html", {"form": form, "tutors": Tutor.objects.all()})
+    return render(request,"admin_dashboard.html", {"form": form, "tutorlistadmin": Tutor.objects.all()},)

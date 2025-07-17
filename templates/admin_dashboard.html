@@ -4,6 +4,15 @@
 
 <div class="container mt-5">
   <h1 class="mb-2">Welcome, Admin!</h1>
+  
+   {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+   {% endif %}
 
   <table class="table table-striped">
     <thead>
