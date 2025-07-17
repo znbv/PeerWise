@@ -1,1 +1,1 @@
-A basic beginner friendly project demonstrating models, views and templates in Django. 
+A basic beginner friendly project built with Django that connects students with available tutors based on subjects. It allows students to send tutoring requests, leave feedback, and browse tutor profiles — all in one place. 
