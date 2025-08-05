@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3> Welcome to your dashboard, {{ request.user }} </h3>
+
+<div class="container mt-4">
+    
+    {% if requests %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Message</th>
+                    <th>Contact Email</th>
+                    <th>Preferred Date</th>
+                    <th>Submitted At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                    <tr>
+                        <td>{{ req.student_name }}</td>
+                        <td>{{ req.message }}</td>
+                        <td>{{ req.contact_email }}</td>
+                        <td>{{ req.preferred_date }}</td>
+                        <td>{{ req.created_at }}</td>
+                        <td>
+                            {% if req.accepted == True %}
+                                <span class="text-success">Accepted</span>
+                            {% elif req.accepted == False %}
+                                <span class="text-danger">Rejected</span>
+                            {% else %}
+                                <form method="post" action="{% url 'handle_request_action' req.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="accept" class="btn btn-success btn-sm">Accept</button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No requests received yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -11,12 +11,10 @@ class TutorUpdateForm(forms.ModelForm):
 class StudentRequestForm(forms.ModelForm):
     class Meta:
         model = StudentRequest
-        fields = ["tutor", "student_name", "message", "contact_email"]
+        fields = ["tutor", "message", "contact_email", "preferred_date"]
         widgets = {
             "tutor": forms.Select(attrs={"class": "form-control"}),
-            "student_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Your name"}
-            ),
+
             "message": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -26,6 +24,11 @@ class StudentRequestForm(forms.ModelForm):
             "contact_email": forms.EmailInput(
                 attrs={"class": "form-control", "placeholder": "Your email"}
             ),
+            "preferred_date": forms.DateTimeInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "datetime-local"
+                })
         }
     # When a student makes a request, the tutor’s sent_request field is set to True and saved.
     def save(self, commit = True):
@@ -44,3 +47,22 @@ class StudentFeedbackForm(forms.ModelForm):
             "rating":forms.NumberInput(attrs={"class":"form-control", "placeholder": "Rate your tutor out of 5"}),
             "comment":forms.Textarea(attrs={"class": "form-control", "placeholder": "Leave a comment:"}) 
         }
+
+from django.contrib.auth.forms import AuthenticationForm
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(
+        max_length=254,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'autofocus': True,
+        }),
+        label="Username"
+    )
+    password = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+        }),
+    )

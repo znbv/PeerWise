@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container mt-5">
-  <h1 class="mb-2">Welcome, Admin!</h1>
+  <h1 class="mb-2">Welcome, {{ request.user }}!</h1>
   
    {% if messages %}
         {% for message in messages %}

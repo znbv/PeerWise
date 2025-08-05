@@ -14,9 +14,58 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 
 </head>
+
 <body class="d-flex flex-column min-vh-100 m-0 p-0">
 
-<!--  Navbar from bootstrap-->
+<nav class="nav-color navbar navbar-expand-lg">
+  <div class="container">
+    <!-- Logo and Brand -->
+    <div class="navbar-brand d-flex align-items-center">
+      <img src="{% static 'images/logo2.png' %}" alt="Logo" style="height: 40px;">
+      <a class="navbar-brand fw-bold text-white ms-2" href="{% url 'tutors' %}">PeerWise</a>
+    </div>
+
+    <!-- Right side buttons -->
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <!-- Home button -->
+      <a href="{% url 'tutors' %}" title="Home" class="btn-custom btn btn-sm rounded-pill">
+        <i class="fa-solid fa-house"></i>
+      </a>
+
+      <!-- Student request view button -->
+      {% if request.user.groups.all.0.name == "Student" %}
+        <a href="{% url 'studentdashboard' %}" title="View Sent Requests" class="btn-custom btn btn-sm rounded-pill">
+          <i class="fa-solid fa-paper-plane"></i> View My Requests
+        </a>
+      {% elif request.user.groups.all.0.name == "Tutor" %}
+        <!-- Tutor request view button -->
+        <a href="{% url 'tutordashboard' %}" title="View Sent Requests" class="btn-custom btn btn-sm rounded-pill">
+          <i class="fa-solid fa-paper-plane"></i> View Student Requests
+        </a>
+      {% endif %}
+
+      {% comment %} {% if request.user.groups.all.0.name == "Student" %}
+      
+      {% endif %} {% endcomment %}
+
+
+      <!-- Welcome + Logout/Login -->
+      {% if request.user.is_authenticated %}
+      <span class="text-white small">Welcome, {{ request.user }}</span>
+      <form method="post" action="{% url 'logout' %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn-custom btn btn-sm rounded-pill">
+          <i class="fa-solid fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
+      {% else %}
+      <a href="{% url 'login' %}" class="btn-custom btn btn-sm rounded-pill">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% comment %} <!--  Navbar from bootstrap-->
 <nav class="nav-color navbar navbar-expand-lg ">
   <div class="container">
     <!-- Logo  -->
@@ -28,7 +77,18 @@
     <div class="ms-auto gap-2">
       <!-- Home button -->
       <a href="{% url 'tutors' %}" title="Home" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid fa-house"></i></a>
-      <a href="{% url 'tutorlistadmin' %}" title ="Admin only" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid fa-user-tie"></i></a>
+      {% if request.user.groups.all.0.name == "Student" %}
+      <a href="{% url 'studentdashboard' %}" title ="view sent requests" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid"></i>View my requests</a> 
+      {% endif %}
+      {% if request.user.is_authenticated %}
+      <p>Welcome, {{ request.user }}</p>
+      <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid"></i>Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
     </div>
   </div>
 </nav>
@@ -42,7 +102,7 @@
   </div>
 </header> 
 <br>
-{% endif %}
+{% endif %} {% endcomment %}
                   
 
  <div class="container mt-4"> 

@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Tutor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank = True)  # One-to-One relationship with User model
     name = models.CharField(max_length=150)
     subject = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
@@ -19,6 +21,8 @@ class StudentRequest(models.Model):
     message = models.TextField(blank=True, null=True)
     contact_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
+    preferred_date = models.DateTimeField(null=True, blank=True)  
+    accepted = models.BooleanField(null=True, blank=True)  
 
     def __str__(self):
         return f"{self.student_name} -> {self.tutor.name}"

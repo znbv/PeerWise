@@ -3,10 +3,32 @@ from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from .models import Tutor, StudentRequest, Feedback
-from .forms import TutorUpdateForm, StudentRequestForm, StudentFeedbackForm
+from .forms import TutorUpdateForm, StudentRequestForm, StudentFeedbackForm, LoginForm
 from django.contrib import messages
 
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin   # Ensures that the user is logged in to access certain views
+from django.contrib.auth.decorators import login_required  # Decorator to ensure the user is logged in
+from .decorators import restrict_access_to_groups  # Custom decorators for access control   
 # Create your views here.
+
+class CustomloginView(LoginView):
+    template_name = "login.html"  # Use login.html to render the login page
+    form_class = LoginForm
+    fields = "__all__"
+    redirect_authenticated_user = True  # Redirects authenticated users to the homepage
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.groups.filter(name='Admin').exists():
+            return reverse_lazy('tutorlistadmin')
+        elif user.groups.filter(name='Tutor').exists():
+            return reverse_lazy('tutordashboard')
+        elif user.groups.filter(name='Student').exists():
+            return reverse_lazy('tutors')  # Redirects to the tutors list for students
+        else:
+            return reverse_lazy('tutors')  # fallback
+       
 
 def thankyou(request):
     return render(request, "thank_you.html") # simply diplays the thankyou page.
@@ -33,18 +55,26 @@ class TutorListView(ListView):
             tutor.feedback_list = feedbacks.filter(tutor_id=tutor.id) # creates a new attr feedback_list
         return context
 
-
-class StudentRequestCreateView(CreateView): #allow students to req for a tutor using a form
-    model = StudentRequest # Model used to save new student requests
+class StudentRequestCreateView(LoginRequiredMixin, CreateView):
+    model = StudentRequest
     form_class = StudentRequestForm
-    template_name = 'request_form.html'
-    success_url = reverse_lazy('thankyou') # Redirect to the thank you page after successful request. 
+    template_name = "request_form.html"
+    success_url = reverse_lazy("thankyou")
 
-    def get_initial(self): # prefills the tutor field if a specifc tutor ID was in the url
-        tutor_id = self.kwargs.get('pk') # 1-M relationship allowed each request to be linked to a specific tutor
-        return {"tutor": tutor_id }  # pr-fill the tutor field in the form with this tutor_id
+    # Pre-fill the tutor field if the URL carries  /request/<pk>/
+    def get_initial(self):
+        return {"tutor": self.kwargs.get("pk")}
 
-class FeedbackCreateView(CreateView):
+    # Automatically attach the logged-in student’s info before saving
+    def form_valid(self, form):
+        req = form.save(commit=False)                 # don’t hit the DB yet
+        req.student_name = self.request.user.username # set student name
+        # req.contact_email = self.request.user.email   # optional: set email
+        req.save()                                    # now save once
+        return super().form_valid(form)               # let the mixin handle redirect
+
+
+class FeedbackCreateView(LoginRequiredMixin, CreateView):
     model = Feedback
     form_class = StudentFeedbackForm
     template_name = "feedback.html"
@@ -54,12 +84,13 @@ class FeedbackCreateView(CreateView):
         tutor_id = self.kwargs.get("pk" )  
         return {"tutor": tutor_id} 
 
-class TutorViewForAdmin(ListView):
+class TutorViewForAdmin(LoginRequiredMixin, ListView):
     model = Tutor
     template_name = 'admin_dashboard.html'
     context_object_name= 'tutorlistadmin' # Tutors is the name of the variable that will be used in the template to access the list of tutors
 
 # Handle both update and delete in one view
+@login_required  
 def update_delete_tutor(request, pk):
     tutor = get_object_or_404(Tutor, pk=pk)
     form = TutorUpdateForm(request.POST or None, instance=tutor)  # Create a form pre-filled with tutor data; use POST data if submitted, else empty form
@@ -78,3 +109,63 @@ def update_delete_tutor(request, pk):
             return redirect("tutorlistadmin")
 
     return render(request,"admin_dashboard.html", {"form": form, "tutorlistadmin": Tutor.objects.all()},)
+
+@restrict_access_to_groups(['Admin'])
+def admin_dashboard(request):
+    return render(request, 'tutorlistadmin')
+
+@restrict_access_to_groups(['Student'])
+def student_dashboard(request):
+     return render(request, 'tutors')
+
+@restrict_access_to_groups(['Tutor'])
+def tutor_dashboard(request):
+     return render(request, 'tutor_dashboard.html')
+
+def student_view(request):
+     return render(request, 'student_dashboard.html')
+
+@login_required
+def tutor_requests_view(request):
+    user = request.user
+
+    try:
+        tutor = Tutor.objects.get(user=request.user) 
+        requests = StudentRequest.objects.filter(tutor=tutor)
+    
+    except Tutor.DoesNotExist:
+        requests = []
+        
+    return render(request, 'tutor_dashboard.html', {'requests': requests})
+
+# def tutor_requests_view(request):
+#     user = request.user
+#     print("Logged-in user:", user)
+
+#     try:
+#         tutor = Tutor.objects.get(user=user)
+#         print("Tutor object:", tutor)
+        
+#         requests = StudentRequest.objects.filter(tutor=tutor)
+#         print("Requests count:", requests.count())
+
+#     except Tutor.DoesNotExist:
+#         print("No Tutor object linked to this user.")
+#         requests = []
+
+#     return render(request, 'tutor_dashboard.html', {'requests': requests})
+
+@login_required
+def handle_request_action(request, request_id):
+    if request.method == 'POST':
+        action = request.POST.get('action')  # 'accept' or 'reject'
+        student_request = get_object_or_404(StudentRequest, id=request_id)
+
+        if student_request.tutor.user == request.user:  # make sure this request belongs to logged-in tutor
+            if action == 'accept':
+                student_request.accepted = True
+            elif action == 'reject':
+                student_request.accepted = False
+            student_request.save()
+
+    return redirect('tutordashboard')  # redirect back to dashboard
