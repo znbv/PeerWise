@@ -21,11 +21,11 @@
                         <p class="text-muted mb-2"><strong>Email:</strong> {{ tutor.contact_email }}</p>
 
                         {% if request.user.is_authenticated and request.user.groups.all.0.name == "Student" %}
-                            {% if tutor.sent_request %}
+                            {% comment %} {% if tutor.sent_request %}
                                 <a href="#" class="btn btn-custom btn-sm me-2 disabled">Request Sent</a>
-                            {% else %}
+                            {% else %} {% endcomment %}
                                 <a href="{% url 'student_request' tutor.id %}" class="btn btn-custom btn-sm me-2">Send Request</a>
-                            {% endif %}
+                            {% comment %} {% endif %} {% endcomment %}
                             <a href="{% url 'leave_feedback' tutor.id %}" class="btn btn-custom btn-outline-secondary btn-sm">Leave Feedback</a>
                         {% endif %}
 

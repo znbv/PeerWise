@@ -1,7 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3> Welcome to your dashboard, {{ request.user }} </h3>
+<h3 class = "text-center text-dark mb-2"> Welcome to your dashboard, {{ request.user }} </h3>
 
+<div class="container mt-4">
+    {% if stud_req %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tutor</th>
+                    <th>Scheduled Time</th>
+                    <th>Requested At</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in stud_req %}
+                    <tr>
+                        <td>{{ req.tutor }}</td>
+                        <td>{{ req.preferred_date|date:"M d, Y H:i" }}</td>
+                        <td>{{ req.created_at|date:"M d, Y H:i" }}</td> 
+                        <td>{{ req.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No requests sent yet.</p>
+    {% endif %}
+</div>
 
 {% endblock %}

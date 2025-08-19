@@ -8,25 +8,20 @@
   <form method="POST" novalidate>
     {% csrf_token %}
     {{ form.non_field_errors }}
-    
+
     <div class="mb-3">
       {{ form.username.label_tag }}
       {{ form.username }}
-      {% for error in form.username.errors %}
-        <div class="text-danger small">{{ error }}</div>
-      {% endfor %}
     </div>
 
     <div class="mb-3">
       {{ form.password.label_tag }}
       {{ form.password }}
-      {% for error in form.password.errors %}
-        <div class="text-danger small">{{ error }}</div>
-      {% endfor %}
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Login</button>
+    <button type="submit" class="btn btn-custom w-100">Login</button>
   </form>
 </div>
+
 
 {% endblock content %}

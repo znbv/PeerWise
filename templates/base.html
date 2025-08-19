@@ -3,120 +3,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"> 
-    <title>PeerWise</title>
+    <title>Tutor System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--Bootstrap 5 CSS  -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <!-- Fonts -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-    <!-- CSS -->
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+     
+ 
 
 </head>
 
 <body class="d-flex flex-column min-vh-100 m-0 p-0">
 
+<!-- Navbar -->
 <nav class="nav-color navbar navbar-expand-lg">
   <div class="container">
-    <!-- Logo and Brand -->
-    <div class="navbar-brand d-flex align-items-center">
-      <img src="{% static 'images/logo2.png' %}" alt="Logo" style="height: 40px;">
-      <a class="navbar-brand fw-bold text-white ms-2" href="{% url 'tutors' %}">PeerWise</a>
-    </div>
 
-    <!-- Right side buttons -->
+    <!-- Brand Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'tutors' %}">
+      <img src="{% static 'images/LogoKFUPM.png' %}" alt="Logo" style="height: 40px;">
+      <span class="ms-2 text-muted">Tutor System</span>
+    </a>
+
+    <!-- Navigation Buttons -->
     <div class="ms-auto d-flex align-items-center gap-2">
-      <!-- Home button -->
+
+      <!-- Home -->
       <a href="{% url 'tutors' %}" title="Home" class="btn-custom btn btn-sm rounded-pill">
         <i class="fa-solid fa-house"></i>
       </a>
 
-      <!-- Student request view button -->
-      {% if request.user.groups.all.0.name == "Student" %}
-        <a href="{% url 'studentdashboard' %}" title="View Sent Requests" class="btn-custom btn btn-sm rounded-pill">
-          <i class="fa-solid fa-paper-plane"></i> View My Requests
-        </a>
-      {% elif request.user.groups.all.0.name == "Tutor" %}
-        <!-- Tutor request view button -->
-        <a href="{% url 'tutordashboard' %}" title="View Sent Requests" class="btn-custom btn btn-sm rounded-pill">
-          <i class="fa-solid fa-paper-plane"></i> View Student Requests
-        </a>
+      <!-- Dashboard Link (Student or Tutor) -->
+      {% if request.user.is_authenticated %}
+        {% if request.user.groups.all.0.name == "Student" %}
+          <a href="{% url 'studentdashboard' %}" title="My Requests" class="btn-custom btn btn-sm rounded-pill">
+            <i class="fa-solid fa-paper-plane"></i> My Requests
+          </a>
+        {% elif request.user.groups.all.0.name == "Tutor" %}
+          <a href="{% url 'tutordashboard' %}" title="Student Requests" class="btn-custom btn btn-sm rounded-pill">
+            <i class="fa-solid fa-paper-plane"></i> Student Requests
+          </a>
+        {% endif %}
       {% endif %}
 
-      {% comment %} {% if request.user.groups.all.0.name == "Student" %}
-      
-      {% endif %} {% endcomment %}
-
-
-      <!-- Welcome + Logout/Login -->
+      <!-- Login / Logout -->
       {% if request.user.is_authenticated %}
-      <span class="text-white small">Welcome, {{ request.user }}</span>
-      <form method="post" action="{% url 'logout' %}" class="d-inline">
-        {% csrf_token %}
-        <button type="submit" class="btn-custom btn btn-sm rounded-pill">
-          <i class="fa-solid fa-sign-out-alt"></i> Logout
-        </button>
-      </form>
+        <span class="text-dark small">Welcome, {{ request.user }}</span>
+        <form method="post" action="{% url 'logout' %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn-custom btn btn-sm rounded-pill">
+            <i class="fa-solid fa-sign-out-alt"></i> Logout
+          </button>
+        </form>
       {% else %}
-      <a href="{% url 'login' %}" class="btn-custom btn btn-sm rounded-pill">Login</a>
+        <a href="{% url 'login' %}" class="btn-custom btn btn-sm rounded-pill">Login</a>
       {% endif %}
-    </div>
-  </div>
-</nav>
 
-{% comment %} <!--  Navbar from bootstrap-->
-<nav class="nav-color navbar navbar-expand-lg ">
-  <div class="container">
-    <!-- Logo  -->
-    <div class="navbar-brand">
-    <img src="{% static 'images/logo2.png' %}" alt="Logo" style="height: 40px;">
-    </div> 
-
-    <a class= "navbar-brand fw-bold text-white" href="{% url 'tutors' %}">PeerWise</a>
-    <div class="ms-auto gap-2">
-      <!-- Home button -->
-      <a href="{% url 'tutors' %}" title="Home" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid fa-house"></i></a>
-      {% if request.user.groups.all.0.name == "Student" %}
-      <a href="{% url 'studentdashboard' %}" title ="view sent requests" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid"></i>View my requests</a> 
-      {% endif %}
-      {% if request.user.is_authenticated %}
-      <p>Welcome, {{ request.user }}</p>
-      <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn-custom btn btn-sm rounded-pill"><i class="fa-solid"></i>Logout</button>
-      </form>
-    {% else %}
-      <a href="{% url 'login' %}">Login</a>
-    {% endif %}
     </div>
   </div>
 </nav>
 
 {% if request.resolver_match.url_name == "tutors" %}
   <!-- Render the hero section -->
-<header class="hero-color text-center m-0 p-4 w-100" style="border-radius:0;">
+<header class="hero-color text-center text-light m-0 p-4 w-100" style="border-radius:0;">
   <div class="w-100 py-4">
       <h1 class="display-6 fw-bold m-0 pt-4">Find the right tutor and start your learning journey.</h1>
       <p class="lead col-md-8 mx-auto pb-4 m-0">Want to share your knowledge? Feel free to become a tutor — reach out to us! </p>
   </div>
 </header> 
 <br>
-{% endif %} {% endcomment %}
-                  
+{% endif %}
 
- <div class="container mt-4"> 
-  <!--  Page-specific content block -->
+<!-- Main Page Content -->
+<div class="container mt-4"> 
   {% block content %}
   {% endblock %}
 </div> 
 
-<!--  Footer -->
-<footer class="footer-color text-light text-center py-3 mt-5">
+<!-- Footer -->
+<footer class="footer-color text-dark text-center  py-3 mt-4 pt-4">
   <div class="container">
-    <p class="mb-1 fw-bold">© 2025 PeerWise | A Learning Platform</p>
+    <p class="mb-1">© 2025. All rights reserved</p>
   </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+</body>
 </html>

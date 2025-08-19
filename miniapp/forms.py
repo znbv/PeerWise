@@ -30,12 +30,15 @@ class StudentRequestForm(forms.ModelForm):
                     "type": "datetime-local"
                 })
         }
-    # When a student makes a request, the tutor’s sent_request field is set to True and saved.
-    def save(self, commit = True):
-        self.instance.tutor.sent_request = True
-        tutor= self.instance.tutor
-        tutor.save()
-        return super().save(commit)
+    # # When a student makes a request, the tutor’s sent_request field is set to True and saved.
+    # def save(self, commit = True):
+    #     self.instance.tutor.sent_request = True
+    #     tutor= self.instance.tutor
+    #     tutor.save()
+    #     return super().save(commit)
+    
+    
+
 
 class StudentFeedbackForm(forms.ModelForm):
     class Meta:

@@ -1,29 +1,45 @@
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import PermissionDenied
+from functools import wraps
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.contrib import messages
 
+# Role-check functions based on Django groups
+def is_student(user):
+    return user.groups.filter(name='Student').exists()
 
-def restrict_access_to_groups(groups: list, raise_exception: bool = False):
-    """
-    Decorator for views that requires the user to be part of a group, 
-    if they are not the user is not allowed into the page.
-    If the raise_exception parameter is given the PermissionDenied exception 
-    is raised returning a 403 status code
-    """
+def is_tutor(user):
+    return user.groups.filter(name='Tutor').exists()
 
-    def in_groups(user):
-        # checks if the user is authenticated, if not returns False
-        if not user.is_authenticated:
-            return False
+def is_admin(user):
+    return user.groups.filter(name='Admin').exists()
 
-        # checks if the user is a superuser or is part of the given groups
-        if user.groups.filter(name__in=groups).exists() or user.is_superuser:
-            return True
+def student_access_only():
+    def decorator(view):
+        @wraps(view)
+        def _wrapped_view(request, *args, **kwargs):
+            if not is_student(request.user):
+                return HttpResponse("403 Forbidden: You are not a student and cannot access this page.")
+            return view(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
 
-        # if raise_exception is given raise the 403 error
-        if raise_exception:
-            raise PermissionDenied
-        
-        # return False otherwise
-        return False
+def tutor_access_only(redirect_to="tutors"):
+    def decorator(view):
+        @wraps(view)
+        def _wrapped_view(request, *args, **kwargs):
+            if not is_tutor(request.user):
+                return redirect(redirect_to)
+            return view(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
 
-    return user_passes_test(in_groups)
+def admin_access_only(redirect_to="login"):
+    def decorator(view):
+        @wraps(view)
+        def _wrapped_view(request, *args, **kwargs):
+            if not is_admin(request.user):    
+                return redirect(redirect_to)
+            return view(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+

@@ -16,13 +16,22 @@ class Tutor(models.Model):
         return f"{self.name} ({self.subject})"
     
 class StudentRequest(models.Model):
-    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)  # ForeignKey to Tutor model
+
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('ACCEPTED', 'Accepted'),
+        ('REJECTED', 'Rejected'),
+    ]
+
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     student_name = models.CharField(max_length=150)
     message = models.TextField(blank=True, null=True)
     contact_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
-    preferred_date = models.DateTimeField(null=True, blank=True)  
-    accepted = models.BooleanField(null=True, blank=True)  
+    preferred_date = models.DateTimeField(null=True, blank=True)
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
 
     def __str__(self):
         return f"{self.student_name} -> {self.tutor.name}"

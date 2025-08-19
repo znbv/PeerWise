@@ -13,6 +13,7 @@ urlpatterns = [
     path("adminaccess/", views.TutorViewForAdmin.as_view(), name="tutorlistadmin"),
     path("adminaccess/<int:pk>/", views.update_delete_tutor, name="update_delete_tutor"), # update or delete a particular tutor
     path("tutor_dashboard/", views.tutor_requests_view, name="tutordashboard"),  # Tutor dashboard for logged-in tutors
-    path('handle-request/<int:request_id>/', views.handle_request_action, name='handle_request_action'),
-    path("student_dashboard/", views.student_view, name="studentdashboard"),  # Student dashboard for logged-in students
+    path('handle_request_action/<int:request_id>/', views.handle_request_action, name='handle_request_action'),
+    path("student_dashboard/", views.student_dashboard, name="studentdashboard"),  # Student dashboard for logged-in students
+     
 ]

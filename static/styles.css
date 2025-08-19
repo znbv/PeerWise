@@ -1,5 +1,5 @@
 body {
-    background-color: #e8f1ff;
+    background-color: #f2f4f8
 
 }
 
@@ -34,22 +34,22 @@ body {
 
 .hero-color{
 
-    background-color: #b3ccff;
+    background-color: white;
 }
 
 .card-color {
 
-    background-color: #d5e4ff;
+    background-color: #ffff;
 }
 
 .nav-color{
-    background-color: #2f45ff; 
+    background-color: white;
 }
 
 .footer-color {
     padding: 1rem 0;
-    background-color: #2f45ff;
-    color: #c1d5e9;
+    background-color: white;
+    /* color: black; */
     text-align: center;
     margin-top: 4rem;
 }
@@ -67,7 +67,7 @@ body {
 }
 
 header{
-    background-image: url("/static/images/blue.jpg");
+    background-image: url("/static/images/green.jpg");
     background-size: 100%;
     background-position: center center;
     background-repeat: no-repeat;
@@ -81,4 +81,3 @@ header{
 
  }
 
- 
