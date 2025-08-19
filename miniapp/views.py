@@ -11,7 +11,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .decorators import admin_access_only, tutor_access_only, student_access_only
-
+from miniapp.models import Tutor
+from .serializers import tutorSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view 
 
 class CustomloginView(LoginView):
     template_name = "login.html"
@@ -151,3 +154,18 @@ def handle_request_action(request, request_id):
             student_request.save()
 
     return redirect('tutordashboard')
+
+@api_view(['GET'])
+def getData(request):
+    Tutors = Tutor.objects.all()
+    serializer = tutorSerializer(Tutors, many=True) # we are gonna serialize multiple items not just one. 
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def postData(request):
+    serializer = tutorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    
+    

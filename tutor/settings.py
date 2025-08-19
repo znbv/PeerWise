@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'miniapp',  # Registering the miniapp created
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

@@ -15,5 +15,6 @@ urlpatterns = [
     path("tutor_dashboard/", views.tutor_requests_view, name="tutordashboard"),  # Tutor dashboard for logged-in tutors
     path('handle_request_action/<int:request_id>/', views.handle_request_action, name='handle_request_action'),
     path("student_dashboard/", views.student_dashboard, name="studentdashboard"),  # Student dashboard for logged-in students
-     
+    path('tutorfromapi/', views.getData), # API endpoint to get data
+    path('tutorfromapi/post/', views.postData),  # API endpoint to post data  
 ]
